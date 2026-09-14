@@ -1,0 +1,68 @@
+import enum
+
+class UserRole(str, enum.Enum):
+    SUPER_ADMIN = "SUPER_ADMIN"
+    PLACEMENT_OFFICER = "PLACEMENT_OFFICER"
+    RECRUITER = "RECRUITER"
+    STUDENT = "STUDENT"
+    MENTOR = "MENTOR"
+
+class ApplicationStatus(str, enum.Enum):
+    APPLIED = "APPLIED"
+    ELIGIBLE = "ELIGIBLE"
+    SHORTLISTED = "SHORTLISTED"
+    INTERVIEW = "INTERVIEW"
+    SELECTED = "SELECTED"
+    REJECTED = "REJECTED"
+    WITHDRAWN = "WITHDRAWN"
+
+class OfferStatus(str, enum.Enum):
+    PENDING = "PENDING"
+    ACCEPTED = "ACCEPTED"
+    DECLINED = "DECLINED"
+    DEFERRED = "DEFERRED"
+    WITHDRAWN = "WITHDRAWN"
+    JOINED = "JOINED"
+
+class ReadinessLevel(str, enum.Enum):
+    NOT_READY = "NOT_READY"
+    DEVELOPING = "DEVELOPING"
+    READY = "READY"
+    HIGHLY_EMPLOYABLE = "HIGHLY_EMPLOYABLE"
+
+class ProficiencyLevel(str, enum.Enum):
+    BEGINNER = "BEGINNER"
+    INTERMEDIATE = "INTERMEDIATE"
+    ADVANCED = "ADVANCED"
+    EXPERT = "EXPERT"
+
+class SkillSource(str, enum.Enum):
+    STUDENT = "STUDENT"
+    RESUME = "RESUME"
+    ASSESSMENT = "ASSESSMENT"
+    CERTIFICATION = "CERTIFICATION"
+    VERIFIED = "VERIFIED"
+    AI_EXTRACTED = "AI_EXTRACTED"
+
+class JobStatus(str, enum.Enum):
+    DRAFT = "DRAFT"
+    PUBLISHED = "PUBLISHED"
+    CLOSED = "CLOSED"
+    CANCELLED = "CANCELLED"
+
+class DriveStatus(str, enum.Enum):
+    DRAFT = "DRAFT"
+    PUBLISHED = "PUBLISHED"
+    REGISTRATION_OPEN = "REGISTRATION_OPEN"
+    REGISTRATION_CLOSED = "REGISTRATION_CLOSED"
+    IN_PROGRESS = "IN_PROGRESS"
+    COMPLETED = "COMPLETED"
+    CANCELLED = "CANCELLED"
+
+class GapSeverity(str, enum.Enum):
+    NONE = "NONE"
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+    CRITICAL = "CRITICAL"
+
