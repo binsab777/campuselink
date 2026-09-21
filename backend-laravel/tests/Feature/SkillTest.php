@@ -12,6 +12,6 @@ class SkillTest extends TestCase {
         $student = Student::factory()->create(['user_id' => $user->id]);
         
         $response = $this->actingAs($user)->getJson('/api/v1/students/me/full');
-        $response->assertStatus(200)->assertJsonStructure(['data' => ['skills']]);
+        $response->assertStatus(200)->assertJsonStructure(['skills']);
     }
 }

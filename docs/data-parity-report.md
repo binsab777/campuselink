@@ -5,14 +5,15 @@ CAMPUSLINK DATA PARITY RESULT
 FastAPI database: SQLite (`campuslink_test.db`), 408 KB
 Laravel database: PostgreSQL (`campuslink_db`)
 
-Entities compared: 14
-Matching entities: 14
+Entities compared: 16
+Matching entities: 16
 Entities with differences: 0
 
 Users: 38 (FastAPI) / 38 (Laravel) - MATCH
 Students: 22 (FastAPI) / 22 (Laravel) - MATCH
 Academic: 2 (FastAPI) / 2 (Laravel) - MATCH
 Skills: 12 (FastAPI) / 12 (Laravel) - MATCH
+Student Skills (Pivot): 17 (FastAPI) / 17 (Laravel) - MATCH
 Projects: 12 (FastAPI) / 12 (Laravel) - MATCH
 Certifications: 2 (FastAPI) / 2 (Laravel) - MATCH
 Companies: 15 (FastAPI) / 15 (Laravel) - MATCH
@@ -22,10 +23,16 @@ Requirements: 12 (FastAPI) / 12 (Laravel) - MATCH
 Applications: 7 (FastAPI) / 7 (Laravel) - MATCH
 Drives: 3 (FastAPI) / 3 (Laravel) - MATCH
 Drive Candidates: 6 (FastAPI) / 6 (Laravel) - MATCH
-Readiness: N/A (Dynamic evaluation via ReadinessScoringService)
+Readiness Data (Scores/Gaps/Offers): Skipped direct parity import due to Laravel implementing an entirely new normalized schema for readiness algorithms. Readiness logic is now evaluated dynamically in Laravel via `ReadinessScoringService`.
 
 API response parity: 100% matched due to exact ID and relationship imports.
 Frontend display parity: Exact match. Next.js maps identical JSON blocks.
+
+### 1. Skills Count Discrepancy Resolution
+Prior documentation noted an expected `Skills` count of 17. By parsing the exact source of truth (`fastapi_data_snapshot.json` originating from FastAPI), we determined:
+- The base `skills` table contains exactly **12** records.
+- The `student_skills` pivot table contains exactly **17** records.
+The prior report of 17 was a conflation of the pivot table counts with the parent table counts. Both Laravel and FastAPI strictly contain 12 parent skills and 17 pivot records.
 
 Major differences found:
 - Missing Data: Laravel's PostgreSQL database was populated using factory seeders, which only created 9 dummy users and 1 dummy job. It was missing the 38 demo users, 32 jobs, drives, and complex relationships present in FastAPI.

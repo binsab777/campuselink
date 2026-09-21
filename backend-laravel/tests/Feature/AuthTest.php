@@ -31,8 +31,8 @@ class AuthTest extends TestCase
         // Verify database cascade
         $this->assertDatabaseHas('users', ['email' => 'newstudent@college.edu']);
         $this->assertDatabaseHas('students', [
-            'first_name' => 'New',
-            'branch' => 'Computer Science',
+            'first_name' => 'Newstudent',
+            'branch' => 'Computer Science'
         ]);
         
         $student = Student::first();

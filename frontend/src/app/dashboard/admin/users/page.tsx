@@ -7,8 +7,6 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Modal } from "@/components/ui/Modal";
-import { Select } from "@/components/ui/Select";
-import { FormField } from "@/components/forms/FormField";
 import { LoadingState } from "@/components/feedback/LoadingState";
 import { ErrorState } from "@/components/feedback/ErrorState";
 import { EmptyState } from "@/components/feedback/EmptyState";
@@ -25,14 +23,38 @@ export default function AdminUsersPage() {
   const [error, setError] = useState("");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  const handleDownloadResume = async (url: string) => {
+    try {
+      const fullUrl = url.startsWith('http') ? url : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000') + url;
+      const token = localStorage.getItem('token');
+      const response = await fetch(fullUrl, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error('Failed to download');
+      const blob = await response.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = downloadUrl;
+      a.download = 'resume.pdf';
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(downloadUrl);
+      a.remove();
+    } catch (err) {
+      console.error(err);
+      alert('Could not download resume');
+    }
+  };
+
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("ALL");
 
-  // Role Edit Modal
-  const [editingUser, setEditingUser] = useState<AdminUserItem | null>(null);
-  const [newRole, setNewRole] = useState<string>("STUDENT");
-  const [savingRole, setSavingRole] = useState(false);
+  // View User Modal
+  const [viewingUser, setViewingUser] = useState<any | null>(null);
+  const [viewLoading, setViewLoading] = useState(false);
 
   // Status toggle loading state
   const [togglingId, setTogglingId] = useState<number | null>(null);
@@ -75,27 +97,20 @@ export default function AdminUsersPage() {
     }
   };
 
-  const handleSaveRole = async () => {
-    if (!editingUser) return;
-    setSavingRole(true);
+  const handleViewDetails = async (userId: number) => {
+    setViewLoading(true);
     try {
-      await adminApi.updateUserRole(editingUser.id, newRole);
-      setToastMessage(`Role for ${editingUser.email} updated to ${newRole}.`);
-      setUsers((prev) =>
-        prev.map((u) => (u.id === editingUser.id ? { ...u, role: newRole as any } : u))
-      );
-      setEditingUser(null);
+      const details = await adminApi.getUser(userId);
+      setViewingUser(details);
     } catch (err: any) {
       setToastMessage(parseApiError(err).message);
     } finally {
-      setSavingRole(false);
+      setViewLoading(false);
     }
   };
 
-  const isSuperAdmin = currentUser?.role === "SUPER_ADMIN";
-
   return (
-    <AppLayout allowedRoles={["SUPER_ADMIN", "PLACEMENT_OFFICER"]}>
+    <AppLayout allowedRoles={["SUPER_ADMIN"]}>
       <PageHeader
         title="User Accounts & Access Control"
         subtitle="Authorize system access, inspect role distribution, and manage account activation."
@@ -105,46 +120,200 @@ export default function AdminUsersPage() {
 
       <Toast message={toastMessage} onDismiss={() => setToastMessage(null)} />
 
-      {/* Role Change Modal */}
-      {editingUser && (
+      {/* User Details View Modal */}
+      {viewingUser && (
         <Modal
           isOpen={true}
-          onClose={() => setEditingUser(null)}
-          title="Modify Account Role"
-          subtitle={`Account: ${editingUser.email}`}
+          onClose={() => setViewingUser(null)}
+          title="Account Details"
+          subtitle={`UID #${viewingUser.id}`}
           footer={
             <div className="flex justify-end gap-2">
-              <Button variant="outline" size="sm" onClick={() => setEditingUser(null)}>
-                Cancel
-              </Button>
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={handleSaveRole}
-                loading={savingRole}
-              >
-                Save Role
+              <Button variant="outline" size="sm" onClick={() => setViewingUser(null)}>
+                Close
               </Button>
             </div>
           }
         >
-          <div className="space-y-4">
-            <FormField
-              label="Assigned System Role"
-              helperText="Changing a user's role alters their permissions immediately on their next authentication."
-            >
-              <Select
-                value={newRole}
-                onChange={(e) => setNewRole(e.target.value)}
-                options={[
-                  { value: "STUDENT", label: "STUDENT (Campus Candidate)" },
-                  { value: "RECRUITER", label: "RECRUITER (Corporate Hiring Team)" },
-                  { value: "PLACEMENT_OFFICER", label: "PLACEMENT_OFFICER (College Placement Team)" },
-                  { value: "SUPER_ADMIN", label: "SUPER_ADMIN (System Administrator)" },
-                  { value: "MENTOR", label: "MENTOR (Academic Advisor)" },
-                ]}
-              />
-            </FormField>
+          <div className="space-y-6 text-sm">
+            <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg border border-gray-200">
+              <div>
+                <span className="block text-xs font-semibold text-gray-500 mb-1">Email Address</span>
+                <span className="font-medium text-gray-900">{viewingUser.email}</span>
+              </div>
+              <div>
+                <span className="block text-xs font-semibold text-gray-500 mb-1">System Role</span>
+                <StatusBadge status={viewingUser.role} size="sm" />
+              </div>
+              <div>
+                <span className="block text-xs font-semibold text-gray-500 mb-1">Account Status</span>
+                {viewingUser.is_active ? (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-bold bg-emerald-100 text-emerald-800">
+                    Active
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-2xs font-bold bg-rose-100 text-rose-800">
+                    Deactivated
+                  </span>
+                )}
+              </div>
+              <div>
+                <span className="block text-xs font-semibold text-gray-500 mb-1">Created At</span>
+                <span className="text-gray-900">
+                  {viewingUser.created_at ? new Date(viewingUser.created_at).toLocaleString() : "â€”"}
+                </span>
+              </div>
+            </div>
+
+            {viewingUser.student_profile && (
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-gray-900 border-b pb-2">Student Profile Information</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <span className="block text-xs font-semibold text-gray-500">Name</span>
+                    <span className="text-gray-900">{viewingUser.student_profile.first_name} {viewingUser.student_profile.last_name}</span>
+                  </div>
+                  <div>
+                    <span className="block text-xs font-semibold text-gray-500">Identifier</span>
+                    <span className="text-gray-900">{viewingUser.student_profile.student_identifier}</span>
+                  </div>
+                  <div>
+                    <span className="block text-xs font-semibold text-gray-500">Branch</span>
+                    <span className="text-gray-900">{viewingUser.student_profile.branch}</span>
+                  </div>
+                  <div>
+                    <span className="block text-xs font-semibold text-gray-500">CGPA</span>
+                    <span className="text-gray-900">{viewingUser.student_profile.cgpa}</span>
+                  </div>
+                </div>
+
+                {viewingUser.student_profile.skills && viewingUser.student_profile.skills.length > 0 && (
+                  <div>
+                    <span className="block text-xs font-semibold text-gray-500 mb-1">Skills</span>
+                    <div className="flex flex-wrap gap-2">
+                      {viewingUser.student_profile.skills.map((s: any) => (
+                        <span key={s.id} className="px-2 py-1 text-2xs bg-blue-50 text-blue-700 rounded border border-blue-100">
+                          {s.skill?.name}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+
+                {viewingUser.student_profile.academic_history && viewingUser.student_profile.academic_history.length > 0 && (
+                  <div>
+                    <span className="block text-xs font-semibold text-gray-500 mb-1">Academic History ({viewingUser.student_profile.academic_history.length})</span>
+                    <ul className="text-xs text-gray-700 list-disc list-inside">
+                      {viewingUser.student_profile.academic_history.map((a: any) => (
+                        <li key={a.id}>{a.degree} from {a.institution} ({a.percentage}%)</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                
+                {viewingUser.student_profile.certifications && viewingUser.student_profile.certifications.length > 0 && (
+                  <div>
+                    <span className="block text-xs font-semibold text-gray-500 mb-1">Certifications ({viewingUser.student_profile.certifications.length})</span>
+                    <ul className="text-xs text-gray-700 list-disc list-inside">
+                      {viewingUser.student_profile.certifications.map((c: any) => (
+                        <li key={c.id}>{c.name} by {c.issuing_organization}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {viewingUser.student_profile.resume_url && (
+                  <div>
+                    <span className="block text-xs font-semibold text-gray-500 mb-1">Resume Metadata</span>
+                    <button onClick={() => handleDownloadResume(viewingUser.student_profile.resume_url)} className="text-xs text-blue-600 underline cursor-pointer">View Resume Document</button>
+                  </div>
+                )}
+
+                {viewingUser.student_profile.applications && viewingUser.student_profile.applications.length > 0 && (
+                  <div>
+                    <span className="block text-xs font-semibold text-gray-500 mb-1">Job Applications ({viewingUser.student_profile.applications.length})</span>
+                    <ul className="text-xs text-gray-700 list-disc list-inside">
+                      {viewingUser.student_profile.applications.map((app: any) => (
+                        <li key={app.id}>Application #{app.id} - Status: {app.status}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                
+                {viewingUser.student_profile.scores && viewingUser.student_profile.scores.length > 0 && (
+                  <div>
+                    <span className="block text-xs font-semibold text-gray-500 mb-1">Readiness Scores ({viewingUser.student_profile.scores.length})</span>
+                    <ul className="text-xs text-gray-700 list-disc list-inside">
+                      {viewingUser.student_profile.scores.map((s: any) => (
+                        <li key={s.id}>{s.dimension}: {s.score}/100</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {viewingUser.student_profile.assessments && viewingUser.student_profile.assessments.length > 0 && (
+                  <div>
+                    <span className="block text-xs font-semibold text-gray-500 mb-1">Assessments ({viewingUser.student_profile.assessments.length})</span>
+                    <ul className="text-xs text-gray-700 list-disc list-inside">
+                      {viewingUser.student_profile.assessments.map((a: any) => (
+                        <li key={a.id}>{a.test_name} - Score: {a.score}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {viewingUser.student_profile.offers && viewingUser.student_profile.offers.length > 0 && (
+                  <div>
+                    <span className="block text-xs font-semibold text-gray-500 mb-1">Job Offers ({viewingUser.student_profile.offers.length})</span>
+                    <ul className="text-xs text-gray-700 list-disc list-inside">
+                      {viewingUser.student_profile.offers.map((o: any) => (
+                        <li key={o.id}>Offer #{o.id} - Salary: {o.salary_offered}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {viewingUser.student_profile.projects && viewingUser.student_profile.projects.length > 0 && (
+                  <div>
+                    <span className="block text-xs font-semibold text-gray-500 mb-1">Projects ({viewingUser.student_profile.projects.length})</span>
+                    <ul className="text-xs text-gray-700 list-disc list-inside">
+                      {viewingUser.student_profile.projects.map((p: any) => (
+                        <li key={p.id}>{p.title}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {viewingUser.recruiter_profile && (
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold text-gray-900 border-b pb-2">Recruiter & Company Information</h3>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <span className="block text-xs font-semibold text-gray-500">Contact Name</span>
+                    <span className="text-gray-900">{viewingUser.recruiter_profile.contact_name}</span>
+                  </div>
+                  <div>
+                    <span className="block text-xs font-semibold text-gray-500">Contact Phone</span>
+                    <span className="text-gray-900">{viewingUser.recruiter_profile.contact_phone || "â€”"}</span>
+                  </div>
+                </div>
+
+                {viewingUser.recruiter_profile.company && (
+                  <div className="mt-4 bg-gray-50 p-3 rounded border border-gray-200">
+                    <span className="block text-xs font-bold text-gray-700 mb-2">Company Details</span>
+                    <div className="grid grid-cols-2 gap-3 text-xs">
+                      <div><span className="font-semibold">Name:</span> {viewingUser.recruiter_profile.company.name}</div>
+                      <div><span className="font-semibold">Industry:</span> {viewingUser.recruiter_profile.company.industry || "â€”"}</div>
+                      <div><span className="font-semibold">Size:</span> {viewingUser.recruiter_profile.company.size || "â€”"}</div>
+                      <div><span className="font-semibold">HQ:</span> {viewingUser.recruiter_profile.company.headquarters || "â€”"}</div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </Modal>
       )}
@@ -240,7 +409,7 @@ export default function AdminUsersPage() {
                             {u.student_profile.first_name} {u.student_profile.last_name}
                           </span>
                           <span className="text-2xs text-blue-600 block">
-                            {u.student_profile.student_identifier} • {u.student_profile.branch}
+                            {u.student_profile.student_identifier} &bull; {u.student_profile.branch}
                           </span>
                         </div>
                       ) : u.recruiter_profile ? (
@@ -253,27 +422,22 @@ export default function AdminUsersPage() {
                           </span>
                         </div>
                       ) : (
-                        <span className="text-gray-400">—</span>
+                        <span className="text-gray-400">&mdash;</span>
                       )}
                     </td>
                     <td className="p-3.5 text-gray-500">
-                      {u.created_at ? new Date(u.created_at).toLocaleDateString() : "—"}
+                      {u.created_at ? new Date(u.created_at).toLocaleDateString() : "&mdash;"}
                     </td>
                     <td className="p-3.5 text-right">
                       <div className="flex items-center justify-end gap-2">
-                        {isSuperAdmin && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="text-2xs h-7 px-2"
-                            onClick={() => {
-                              setEditingUser(u);
-                              setNewRole(u.role);
-                            }}
-                          >
-                            Role
-                          </Button>
-                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="text-2xs h-7 px-2"
+                          onClick={() => handleViewDetails(u.id)}
+                        >
+                          View
+                        </Button>
                         <Button
                           variant="outline"
                           size="sm"

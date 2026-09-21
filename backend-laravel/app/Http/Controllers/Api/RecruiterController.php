@@ -19,7 +19,9 @@ class RecruiterController extends Controller {
             'name' => 'sometimes|string|max:255',
             'website' => 'nullable|string',
             'description' => 'nullable|string',
-            'industry' => 'nullable|string'
+            'industry' => 'nullable|string',
+            'size' => 'nullable|string',
+            'headquarters' => 'nullable|string'
         ]);
         
         $company->update($validated);

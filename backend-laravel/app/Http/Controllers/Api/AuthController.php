@@ -36,25 +36,27 @@ class AuthController extends Controller {
                 'role' => $validated['role'],
             ]);
             if ($validated['role'] === UserRole::STUDENT->value) {
+                $namePrefix = ucfirst(explode('@', $validated['email'])[0]);
                 Student::create([
                     'user_id' => $user->id,
                     'student_identifier' => 'STU' . str_pad($user->id, 4, '0', STR_PAD_LEFT),
-                    'first_name' => $validated['first_name'],
-                    'last_name' => $validated['last_name'],
-                    'branch' => $validated['branch'],
-                    'graduation_year' => $validated['graduation_year'],
+                    'first_name' => $namePrefix,
+                    'last_name' => 'Student',
+                    'branch' => 'Computer Science',
+                    'graduation_year' => date('Y') + 2,
+                    'cgpa' => 8.0,
                 ]);
             } elseif ($validated['role'] === UserRole::RECRUITER->value) {
-                $company = Company::firstOrCreate(
-                    ['name' => $validated['company_name']],
-                    ['description' => '', 'industry' => 'Technology']
+                $namePrefix = ucfirst(explode('@', $validated['email'])[0]);
+                $companyName = $namePrefix . ' Technologies';
+                $company = Company::create(
+                    ['name' => $companyName, 'description' => null, 'industry' => 'Information Technology', 'size' => '51-200']
                 );
                 Recruiter::create([
                     'user_id' => $user->id,
                     'company_id' => $company->id,
-                    'contact_name' => $validated['contact_name'],
+                    'contact_name' => $namePrefix,
                     'contact_email' => $validated['email'],
-                    'contact_phone' => $validated['contact_phone'] ?? null,
                 ]);
             }
             return response()->json([

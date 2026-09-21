@@ -80,16 +80,13 @@ export const adminApi = {
     return apiClient.get<{ total: number; users: AdminUserItem[] }>(`/api/v1/admin/users?${q.toString()}`);
   },
 
+  getUser: (userId: number) =>
+    apiClient.get<AdminUserItem>(`/api/v1/admin/users/${userId}`),
+
   updateUserStatus: (userId: number, isActive: boolean) =>
     apiClient.patch<{ id: number; email: string; is_active: boolean }>(
       `/api/v1/admin/users/${userId}/status`,
       { is_active: isActive }
-    ),
-
-  updateUserRole: (userId: number, role: string) =>
-    apiClient.patch<{ id: number; email: string; role: string }>(
-      `/api/v1/admin/users/${userId}/role`,
-      { role }
     ),
 
   // Master Skills

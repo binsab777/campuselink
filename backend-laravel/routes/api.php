@@ -84,13 +84,10 @@ Route::prefix('v1')->group(function () {
             Route::delete('/me/drives/{id}', [\App\Http\Controllers\Api\RecruiterDriveController::class, 'destroy']);
         });
 
-        Route::middleware('role:SUPER_ADMIN,PLACEMENT_OFFICER')->prefix('admin')->group(function () {
-            Route::get('/users', [AdminController::class, 'index']);
-            Route::patch('/users/{id}/status', [AdminController::class, 'status']);
-        });
-        
         Route::middleware('role:SUPER_ADMIN')->prefix('admin')->group(function () {
-            Route::patch('/users/{id}/role', [AdminController::class, 'role']);
+            Route::get('/users', [AdminController::class, 'index']);
+            Route::get('/users/{id}', [AdminController::class, 'show']);
+            Route::patch('/users/{id}/status', [AdminController::class, 'status']);
         });
 
         Route::middleware('role:SUPER_ADMIN,PLACEMENT_OFFICER')->prefix('skills')->group(function () {

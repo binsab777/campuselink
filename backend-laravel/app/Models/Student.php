@@ -13,6 +13,14 @@ class Student extends Model {
     ];
 
     public function user() { return $this->belongsTo(User::class); }
+    
+    public function getResumeUrlAttribute($value) {
+        if ($value) {
+            return '/api/v1/students/' . $this->id . '/resume/download';
+        }
+        return null;
+    }
+
     public function academicHistory() { return $this->hasMany(StudentAcademicHistory::class); }
     public function skills() { return $this->hasMany(StudentSkill::class); }
     public function projects() { return $this->hasMany(StudentProject::class); }

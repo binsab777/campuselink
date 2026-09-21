@@ -53,7 +53,7 @@
 | GET | `/api/v1/students/me/full` | `get_full_profile` | `StudentController@getFullProfile` | Yes | STUDENT | `SkillTest::test_student_can_manage_skills` | MATCHED |
 | GET | `/api/v1/students/me/projects` | `get_my_projects` | `StudentProjectController@index` | Yes | STUDENT | `StudentCrudParityTest::test_student_can_add_and_list_projects` | MATCHED |
 | GET | `/api/v1/students/me/skills` | `get_my_skills` | `StudentSkillController@index` | Yes | STUDENT | `StudentProfileExtensionsParityTest::test_student_can_manage_skills` | MATCHED |
-| PATCH | `/api/v1/admin/users/{id}/role` | `update_user_role` | `AdminController@role` | Yes | SUPER_ADMIN | `UserUpdateParityTest::test_super_admin_can_update_user_role` | MATCHED |
+| PATCH | `/api/v1/admin/users/{id}/role` | `update_user_role` | `REMOVED` | N/A | SUPER_ADMIN | `UserUpdateParityTest::test_role_update_endpoint_is_removed` | INTENTIONAL PRODUCT CHANGE |
 | PATCH | `/api/v1/admin/users/{id}/status` | `toggle_user_status` | `AdminController@status` | Yes | SUPER_ADMIN | `AdminStatusParityTest::test_admin_can_update_status` | MATCHED |
 | PATCH | `/api/v1/drives/{id}/candidates/{id}` | `update_candidate` | `DriveController@updateCandidate` | Yes | RECRUITER | `DriveActionsParityTest::test_recruiter_can_manage_candidates_and_evaluate` | MATCHED |
 | POST | `/api/v1/auth/login` | `login_user` | `AuthController@login` | No | Public | `AuthTest::test_login_returns_token` | MATCHED |
