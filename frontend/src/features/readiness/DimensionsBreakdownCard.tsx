@@ -11,14 +11,16 @@ export interface DimensionsBreakdownCardProps {
 export const DimensionsBreakdownCard: React.FC<DimensionsBreakdownCardProps> = ({ readiness }) => {
   if (!readiness) return null;
 
+  const comps = readiness.components || {};
+
   const dimensions = [
-    { key: "academic", label: "Academic Foundation", score: readiness.components.academic },
-    { key: "technical", label: "Technical Skills Mastery", score: readiness.components.technical },
-    { key: "projects", label: "Applied Projects", score: readiness.components.projects },
-    { key: "certifications", label: "Industry Certifications", score: readiness.components.certifications },
-    { key: "assessments", label: "Standardized Assessments", score: readiness.components.assessments },
-    { key: "communication", label: "Communication & Soft Skills", score: readiness.components.communication },
-    { key: "interview", label: "Mock Interviews & Aptitude", score: readiness.components.interview },
+    { key: "academic", label: "Academic Foundation", score: comps.academic },
+    { key: "technical", label: "Technical Skills Mastery", score: comps.technical },
+    { key: "projects", label: "Applied Projects", score: comps.projects },
+    { key: "certifications", label: "Industry Certifications", score: comps.certifications },
+    { key: "assessments", label: "Standardized Assessments", score: comps.assessments },
+    { key: "communication", label: "Communication & Soft Skills", score: comps.communication },
+    { key: "interview", label: "Mock Interviews & Aptitude", score: comps.interview },
   ];
 
   const getBarColor = (score: number) => {
@@ -35,7 +37,7 @@ export const DimensionsBreakdownCard: React.FC<DimensionsBreakdownCardProps> = (
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {dimensions.map((dim) => {
-          const effectiveWeight = Math.round((readiness.effective_weights[dim.key] || 0) * 100);
+          const effectiveWeight = Math.round(((readiness.effective_weights || {})[dim.key] || 0) * 100);
           const score = Math.round(dim.score || 0);
 
           return (
@@ -54,7 +56,7 @@ export const DimensionsBreakdownCard: React.FC<DimensionsBreakdownCardProps> = (
 
               <div className="flex items-center justify-between text-2xs text-gray-500 pt-0.5">
                 <span>Effective Weight: <strong className="text-gray-700">{effectiveWeight}%</strong></span>
-                <span>Configured: <strong className="text-gray-700">{Math.round((readiness.configured_weights[dim.key] || 0) * 100)}%</strong></span>
+                <span>Configured: <strong className="text-gray-700">{Math.round(((readiness.configured_weights || {})[dim.key] || 0) * 100)}%</strong></span>
               </div>
             </div>
           );

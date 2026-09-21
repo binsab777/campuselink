@@ -1,0 +1,16 @@
+import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+conn = psycopg2.connect('postgresql://postgres:postgres@localhost:5432/postgres')
+conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+cursor = conn.cursor()
+try: cursor.execute('CREATE DATABASE campuslink_db')
+except Exception as e: print(e)
+try: cursor.execute("CREATE USER campuslink WITH PASSWORD 'campuslink_password'")
+except Exception as e: print(e)
+try: cursor.execute('GRANT ALL PRIVILEGES ON DATABASE campuslink_db TO campuslink')
+except Exception as e: print(e)
+try: cursor.execute('ALTER DATABASE campuslink_db OWNER TO campuslink')
+except Exception as e: print(e)
+cursor.close()
+conn.close()
+print('PG Configured')

@@ -206,7 +206,7 @@ export default function OfficerStudentsPage() {
                     <td className="p-3.5">
                       {s.resume_url ? (
                         <a
-                          href={`http://localhost:8000${s.resume_url}`}
+                          href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8001"}${s.resume_url.replace("/api/v1", "")}`}
                           target="_blank"
                           rel="noreferrer"
                           className="text-2xs font-bold text-blue-600 hover:underline"

@@ -78,7 +78,7 @@ export const ResumeCard: React.FC<ResumeCardProps> = ({
               <div>
                 <h4 className="text-sm font-semibold text-emerald-900">Resume Uploaded</h4>
                 <a
-                  href={`http://localhost:8000${resumeUrl}`}
+                  href={`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8001"}${resumeUrl.replace("/api/v1", "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-emerald-700 hover:underline inline-flex items-center gap-1 mt-0.5"

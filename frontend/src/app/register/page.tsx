@@ -56,24 +56,12 @@ export default function RegisterPage() {
     setFieldErrors({});
 
     try {
-      const res = await fetch("http://localhost:8000/api/v1/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: email.trim(),
-          password,
-          role,
-        }),
+      const { apiClient } = await import("@/services/apiClient");
+      await apiClient.post("/api/v1/auth/register", {
+        email: email.trim(),
+        password,
+        role,
       });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({ detail: "Registration failed." }));
-        const parsed = parseApiError(data);
-        setFormError(parsed.message);
-        setFieldErrors(parsed.fieldErrors);
-        setLoading(false);
-        return;
-      }
 
       setSuccess(true);
       setTimeout(() => {

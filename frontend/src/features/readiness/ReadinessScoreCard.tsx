@@ -73,10 +73,10 @@ export const ReadinessScoreCard: React.FC<ReadinessScoreCardProps> = ({
         <div className="w-full sm:w-auto p-4 bg-white border border-gray-200 rounded-xl text-xs space-y-1">
           <span className="font-bold text-gray-800 block">Data Completeness & Reliability</span>
           <p className="text-gray-600">
-            Available Dimensions: <span className="font-semibold text-gray-900">{readiness.data_quality.available_dimensions.length} / 7</span>
+            Available Dimensions: <span className="font-semibold text-gray-900">{readiness.data_quality?.available_dimensions?.length || 0} / 7</span>
           </p>
           <p className="text-gray-600">
-            Weights Redistributed: <span className="font-semibold text-gray-900">{readiness.data_quality.weights_redistributed ? "Yes (Fair scoring)" : "No (All active)"}</span>
+            Weights Redistributed: <span className="font-semibold text-gray-900">{readiness.data_quality?.weights_redistributed ? "Yes (Fair scoring)" : "No (All active)"}</span>
           </p>
         </div>
       </div>

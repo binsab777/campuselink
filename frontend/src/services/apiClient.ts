@@ -41,6 +41,16 @@ export function parseApiError(error: any): NormalizedApiError {
     const fieldErrors: Record<string, string> = {};
     let message = error.message || "An unexpected error occurred.";
 
+    
+    // Laravel 422 format
+    if (error.errors && typeof error.errors === "object" && !Array.isArray(error.errors)) {
+      Object.keys(error.errors).forEach((key) => {
+        const val = error.errors[key];
+        fieldErrors[key] = Array.isArray(val) ? val[0] : val;
+      });
+      return { message: error.message || "Validation error", fieldErrors, status };
+    }
+
     if (Array.isArray(error.detail)) {
       // FastAPI 422 detail format: [{ loc: ["body", "fieldName"], msg: "...", type: "..." }]
       const firstError = error.detail[0];

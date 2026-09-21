@@ -1,0 +1,290 @@
+[
+  {
+    "method": "POST",
+    "path": "/api/v1/auth/login"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/auth/register"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/auth/refresh"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/auth/me"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/students/me"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/students/me"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/students/me/completeness"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/students/me/full"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/students/me/academic"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/students/me/academic"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/students/me/academic/{hist_id}"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/students/me/academic/{hist_id}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/students/me/skills"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/students/me/skills"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/students/me/skills/{skill_id}"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/students/me/skills/{skill_id}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/students/me/projects"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/students/me/projects"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/students/me/projects/{project_id}"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/students/me/projects/{project_id}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/students/me/certifications"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/students/me/certifications"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/students/me/certifications/{cert_id}"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/students/me/certifications/{cert_id}"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/students/me/resume"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/students/me/resume"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/students/me/drives"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/recruiters/me"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/recruiters/me/company"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/recruiters/me/jobs"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/recruiters/me/jobs"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/recruiters/me/jobs/{job_id}"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/recruiters/me/jobs/{job_id}"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/recruiters/me/jobs/{job_id}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/recruiters/me/drives"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/recruiters/me/drives"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/recruiters/me/drives/{drive_id}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/recruiters/me/dashboard"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/recruiters/candidates/{student_id}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/jobs/skills/all"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/jobs/{job_id}/requirements"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/jobs/{job_id}/requirements"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/jobs/{job_id}/requirements/{req_id}"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/jobs/{job_id}/eligibility/check"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/jobs/available"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/jobs/{job_id}/my-eligibility"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/jobs/{job_id}/apply"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/drives/{drive_id}/candidates"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/drives/{drive_id}/candidates"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/drives/available"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/drives/{drive_id}/candidates/{candidate_id}"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/drives/{drive_id}/evaluate-eligibility"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/drives/{drive_id}/withdraw"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/readiness/me"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/readiness/me/recalculate"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/readiness/me/jobs/{job_id}/skill-gaps"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/readiness/me/jobs/{job_id}/skill-gaps/analyze"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/readiness/students/{student_id}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/readiness/students/{student_id}/jobs/{job_id}/skill-gaps"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/admin/users"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/admin/users/{user_id}/status"
+  },
+  {
+    "method": "PATCH",
+    "path": "/api/v1/admin/users/{user_id}/role"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/skills"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/skills"
+  },
+  {
+    "method": "PUT",
+    "path": "/api/v1/skills/{skill_id}"
+  },
+  {
+    "method": "DELETE",
+    "path": "/api/v1/skills/{skill_id}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/officer/students"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/officer/students/{student_id}"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/officer/companies"
+  },
+  {
+    "method": "POST",
+    "path": "/api/v1/officer/companies"
+  },
+  {
+    "method": "GET",
+    "path": "/health"
+  },
+  {
+    "method": "GET",
+    "path": "/api/v1/admin/only"
+  }
+]

@@ -9,7 +9,7 @@ import {
 } from "@/features/students/types";
 
 export const studentsApi = {
-  getProfile: () => apiClient.get<FullProfileData>("/api/v1/students/me"),
+  getProfile: () => apiClient.get<FullProfileData>("/api/v1/students/me/full"),
 
   updateBasicInfo: (data: Partial<BasicInfo>) =>
     apiClient.put<BasicInfo>("/api/v1/students/me", data),
