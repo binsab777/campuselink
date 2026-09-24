@@ -8,7 +8,6 @@ class StudentAcademicHistory extends Model {
     use HasFactory;
     protected $table = 'student_academic_history';
     protected $guarded = ['id'];
-    protected $casts = ['profile_metadata' => 'array', 'dob' => 'datetime'];
 
     public function student() { return $this->belongsTo(Student::class); }
 }
